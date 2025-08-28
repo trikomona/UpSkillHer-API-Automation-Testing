@@ -4,8 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.Response;
 import org.testng.annotations.Test;
 import org.upskillher.bases.BaseTest;
-import org.upskillher.models.BookingData;
+import org.upskillher.models.RoomData;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -130,6 +131,32 @@ public class RoomsTests extends BaseTest {  //extendemos base para traernos inst
                 .response();
         System.out.println("Respuesta del PATCH: " + response.asString());
     }//updateRoomPrice
+
+    @Test
+    public void createNewRoomUsingRoomData() {
+        Map<String, Object> body = RoomData.createNewRoomUsingRoomData(
+                "104",
+                "Double",
+                true,
+                "Luxury double room with city view",
+                "https://example.com/room1.jpg",
+                "100",
+                Arrays.asList("WiFi", "TV", "Radio", "Refreshments", "Safe", "Views")
+        );
+        Response response = RestAssured
+                .given()
+                .header("Authorization", "Bearer " + BaseTest.token)
+                .contentType("application/json")
+                .body(body)
+                .when()
+                .post("/room")
+                .then()
+                .log().all()
+                .statusCode(201)
+                .extract()
+                .response();
+        System.out.println("Respuesta completa: " + response.asString());
+    }
 
 }//RoomsTests
 
